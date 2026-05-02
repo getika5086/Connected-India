@@ -39,12 +39,10 @@ export default function CompareNightLightChart({ dataA, dataB, nameA, nameB, roa
         <YAxis tick={{ fontSize: 11 }} width={36} />
         <Tooltip
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          formatter={((v: any, name: any) => [Number(v).toFixed(3), name === "a" ? nameA : nameB]) as any}
+          formatter={((v: any) => [Number(v).toFixed(3)]) as any}
           labelFormatter={(l) => `Year ${l}`}
         />
-        <Legend
-          formatter={(value) => (value === "a" ? nameA : nameB)}
-        />
+        <Legend />
         {roadYearA && (
           <ReferenceLine
             x={roadYearA}
@@ -63,8 +61,8 @@ export default function CompareNightLightChart({ dataA, dataB, nameA, nameB, roa
             label={{ value: `${nameB} road`, position: "insideTopRight", fontSize: 10, fill: "#b45309" }}
           />
         )}
-        <Line type="monotone" dataKey="a" name="a" stroke="#1d4ed8" strokeWidth={2} dot={false} connectNulls />
-        <Line type="monotone" dataKey="b" name="b" stroke="#b45309" strokeWidth={2} dot={false} connectNulls />
+        <Line type="monotone" dataKey="a" name={nameA} stroke="#1d4ed8" strokeWidth={2} dot={false} connectNulls />
+        <Line type="monotone" dataKey="b" name={nameB} stroke="#b45309" strokeWidth={2} dot={false} connectNulls />
       </LineChart>
     </ResponsiveContainer>
   );
