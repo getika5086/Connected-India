@@ -38,8 +38,8 @@ export default function CompareNightLightChart({ dataA, dataB, nameA, nameB, roa
         <XAxis dataKey="year" tick={{ fontSize: 11 }} />
         <YAxis tick={{ fontSize: 11 }} width={36} />
         <Tooltip
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          formatter={(v: any, name: string) => [
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formatter={(v: any, name: any) => [
             Number(v).toFixed(3),
             name === "a" ? nameA : nameB,
           ]}
