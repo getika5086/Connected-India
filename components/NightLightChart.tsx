@@ -29,7 +29,8 @@ export default function NightLightChart({ data, roadYear, villageName }: Props) 
           <XAxis dataKey="year" tick={{ fontSize: 12 }} />
           <YAxis tick={{ fontSize: 12 }} width={36} />
           <Tooltip
-            formatter={(v: number) => [v.toFixed(3), "Brightness"]}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formatter={(v: any) => [Number(v).toFixed(3), "Brightness"]}
             labelFormatter={(l) => `Year ${l}`}
           />
           <Legend />

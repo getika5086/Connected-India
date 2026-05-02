@@ -38,8 +38,9 @@ export default function CompareNightLightChart({ dataA, dataB, nameA, nameB, roa
         <XAxis dataKey="year" tick={{ fontSize: 11 }} />
         <YAxis tick={{ fontSize: 11 }} width={36} />
         <Tooltip
-          formatter={(v: number, name: string) => [
-            v.toFixed(3),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formatter={(v: any, name: string) => [
+            Number(v).toFixed(3),
             name === "a" ? nameA : nameB,
           ]}
           labelFormatter={(l) => `Year ${l}`}

@@ -16,12 +16,14 @@ export default function DistrictYearChart({ data, selectedYear, onYearClick }: P
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
-        onClick={(e) => { if (e?.activePayload?.[0]) onYearClick(e.activePayload[0].payload.year); }}>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onClick={(e: any) => { if (e?.activePayload?.[0]) onYearClick(e.activePayload[0].payload.year); }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
         <XAxis dataKey="year" tick={{ fontSize: 11 }} />
         <YAxis tick={{ fontSize: 11 }} width={32} />
         <Tooltip
-          formatter={(v: number) => [v, "Villages connected"]}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formatter={(v: any) => [v, "Villages connected"]}
           labelFormatter={(l) => `Year ${l}`}
           cursor={{ fill: "#f0fdf4" }}
         />
