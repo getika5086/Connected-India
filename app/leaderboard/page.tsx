@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
+import { track } from "@/lib/telemetry";
 
 function tc(s: string) {
   return s.replace(/\b\w/g, (c) => c.toUpperCase());
@@ -113,6 +114,7 @@ function RankedList({
 
 export default async function LeaderboardPage() {
   const rows = await getStateStats();
+  track("leaderboard_view", {});
 
   const totalVillages = rows.reduce((s, r) => s + Number(r.connected), 0);
   const totalPop = rows.reduce((s, r) => s + (r.total_pop ? Number(r.total_pop) : 0), 0);

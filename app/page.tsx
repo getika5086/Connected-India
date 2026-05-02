@@ -174,7 +174,7 @@ export default async function Home() {
               {cards.map(({ tag, tagColor, village, hook }) => (
                 <Link
                   key={village.slug}
-                  href={`/village/${village.slug}`}
+                  href={`/village/${village.slug}?ref=curated`}
                   className="group flex flex-col gap-3 p-4 rounded-xl border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all bg-white"
                 >
                   <span className={`self-start text-xs font-semibold px-2 py-0.5 rounded-full ${tagColor}`}>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/trackEvent";
 
 interface SearchResult {
   village_name: string;
@@ -32,8 +33,10 @@ export default function SearchBox() {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await res.json();
-        setResults(data.results ?? []);
+        const results = data.results ?? [];
+        setResults(results);
         setOpen(true);
+        trackEvent("search_query", { query, results_count: results.length });
       } catch {
         setResults([]);
       } finally {
@@ -42,7 +45,8 @@ export default function SearchBox() {
     }, 300);
   }, [query]);
 
-  function go(slug: string) {
+  function go(slug: string, position?: number) {
+    trackEvent("search_click", { slug, query, position: position ?? 0 });
     setOpen(false);
     setQuery("");
     router.push(`/village/${slug}`);
@@ -63,7 +67,7 @@ export default function SearchBox() {
           className="flex-1 px-4 py-3 text-base outline-none"
           autoComplete="off"
           onKeyDown={(e) => {
-            if (e.key === "Enter" && results.length > 0) go(results[0].slug);
+            if (e.key === "Enter" && results.length > 0) go(results[0].slug, 0);
             if (e.key === "Escape") setOpen(false);
           }}
         />
@@ -86,7 +90,7 @@ export default function SearchBox() {
             <li key={r.slug} className="border-b border-gray-50 last:border-0">
               <button
                 className="w-full text-left px-4 py-3 hover:bg-gray-50 flex justify-between items-start"
-                onClick={() => go(r.slug)}
+                onClick={() => go(r.slug, results.indexOf(r))}
               >
                 <div>
                   <span className="font-medium">{titleCase(r.village_name)}</span>

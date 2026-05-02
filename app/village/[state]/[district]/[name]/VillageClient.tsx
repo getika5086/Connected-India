@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { trackEvent } from "@/lib/trackEvent";
 
 const NightLightChart = dynamic(() => import("@/components/NightLightChart"), { ssr: false });
 
@@ -123,19 +124,13 @@ interface Props {
   };
 }
 
-function getSessionId() {
-  if (typeof window === "undefined") return "";
-  let id = sessionStorage.getItem("sid");
-  if (!id) { id = crypto.randomUUID(); sessionStorage.setItem("sid", id); }
-  return id;
-}
-
-function ShareButton({ label, className }: { label: string; className?: string }) {
+function ShareButton({ label, className, slug }: { label: string; className?: string; slug?: string }) {
   const [copied, setCopied] = useState(false);
   function handleCopy() {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    trackEvent("share_click", { page: "village", slug });
   }
   return (
     <button
@@ -151,18 +146,15 @@ export default function VillageClient({ data }: Props) {
   const { village: v, nightLights, economicCensus, districtSummary } = data;
 
   useEffect(() => {
-    fetch("/api/analytics/view", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        session_id: getSessionId(),
-        shrid: v.shrid,
-        village_name: v.village_name,
-        district_name: v.district_name,
-        referrer: document.referrer || null,
-      }),
-    }).catch(() => {});
-  }, [v.shrid, v.village_name, v.district_name]);
+    trackEvent("village_view", {
+      slug: v.slug,
+      village_name: v.village_name,
+      district_name: v.district_name,
+      state_name: v.state_name,
+      road_comp_year: v.road_comp_year,
+      referrer: document.referrer || null,
+    });
+  }, [v.slug, v.village_name, v.district_name, v.state_name, v.road_comp_year]);
 
   const nlGrowth = v.nl_growth_pct != null ? Number(v.nl_growth_pct) : null;
   const nlGrowthDir = nlGrowth != null
@@ -225,6 +217,7 @@ export default function VillageClient({ data }: Props) {
           </Link>
           <ShareButton
             label="Share"
+            slug={v.slug}
             className="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-1.5 transition-colors"
           />
         </div>
@@ -531,6 +524,7 @@ export default function VillageClient({ data }: Props) {
         <section className="border-t border-gray-100 pt-6 flex items-center justify-between">
           <ShareButton
             label="Share this village"
+            slug={v.slug}
             className="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 transition-colors"
           />
           <span className="text-xs text-gray-400">

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import DistrictClient from "@/components/DistrictClient";
+import { track } from "@/lib/telemetry";
 
 interface Props {
   params: Promise<{ state: string; district: string }>;
@@ -16,6 +17,8 @@ export default async function DistrictPage({ params }: Props) {
   if (!res.ok) notFound();
   const data = await res.json();
   if (data.error) notFound();
+
+  track("district_view", { state, district });
 
   return <DistrictClient summary={data.summary} yearBreakdown={data.yearBreakdown} />;
 }

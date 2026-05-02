@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
+import { track } from "@/lib/telemetry";
 
 function tc(s: string) {
   return s.replace(/\b\w/g, (c) => c.toUpperCase());
@@ -93,6 +94,8 @@ export default async function StatePage({
   const { state: stateSlug } = await params;
   const data = await getStateData(stateSlug);
   if (!data) notFound();
+
+  track("state_view", { state: stateSlug });
 
   const { summary: s, districts } = data;
   const stateName = tc(s.state_name);

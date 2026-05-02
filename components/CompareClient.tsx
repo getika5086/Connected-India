@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/trackEvent";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
@@ -221,11 +222,20 @@ export default function CompareClient() {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    trackEvent("share_click", { page: "compare", slug_a: slugA, slug_b: slugB });
   }
 
   const vA = dataA?.village ?? null;
   const vB = dataB?.village ?? null;
   const bothLoaded = vA && vB;
+
+  // Fire compare_view once when both villages are loaded
+  useEffect(() => {
+    if (vA && vB) {
+      trackEvent("compare_view", { slug_a: vA.slug, slug_b: vB.slug,
+        village_a: vA.village_name, village_b: vB.village_name });
+    }
+  }, [vA?.slug, vB?.slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const nlGrowthA = vA?.nl_growth_pct != null ? Number(vA.nl_growth_pct) : null;
   const nlGrowthB = vB?.nl_growth_pct != null ? Number(vB.nl_growth_pct) : null;
