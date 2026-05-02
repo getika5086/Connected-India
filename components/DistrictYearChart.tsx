@@ -23,7 +23,7 @@ export default function DistrictYearChart({ data, selectedYear, onYearClick }: P
         <YAxis tick={{ fontSize: 11 }} width={32} />
         <Tooltip
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          formatter={(v: any) => [v, "Villages connected"]}
+          formatter={((v: any) => [v, "Villages connected"]) as any}
           labelFormatter={(l) => `Year ${l}`}
           cursor={{ fill: "#f0fdf4" }}
         />
