@@ -16,6 +16,10 @@ interface Props {
   roadYearB: number | null;
 }
 
+// Extracted so TypeScript doesn't try to infer against Recharts' strict Formatter type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const tooltipFormatter: any = (v: any) => [Number(v).toFixed(3)];
+
 export default function CompareNightLightChart({ dataA, dataB, nameA, nameB, roadYearA, roadYearB }: Props) {
   // Merge both datasets by year
   const allYears = Array.from(
@@ -38,8 +42,7 @@ export default function CompareNightLightChart({ dataA, dataB, nameA, nameB, roa
         <XAxis dataKey="year" tick={{ fontSize: 11 }} />
         <YAxis tick={{ fontSize: 11 }} width={36} />
         <Tooltip
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          formatter={((v: any) => [Number(v).toFixed(3)]) as any}
+          formatter={tooltipFormatter}
           labelFormatter={(l) => `Year ${l}`}
         />
         <Legend />
